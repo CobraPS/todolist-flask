@@ -1,0 +1,164 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Local Todo</title>
+
+    <script src="/static/theme.js"></script>
+
+    <link rel="stylesheet" href="/static/styles.css" />
+    <script src="/static/app.js" defer></script>
+  </head>
+
+  <body>
+    <div class="card">
+      <div class="row">
+        <div>
+          <h1>Local Todo</h1>
+          <div class="meta" id="count"></div>
+
+          <div class="progress-track" aria-label="Overall completion">
+            <div id="overallProgress" class="progress-fill" style="width:0%"></div>
+          </div>
+        </div>
+
+        <div class="top-controls">
+          <input id="search" class="search" type="search" placeholder="Search (/)" autocomplete="off" />
+
+          <div class="seg" role="tablist" aria-label="View">
+            <button type="button" id="viewListBtn" class="active" role="tab" aria-selected="true">List</button>
+            <button type="button" id="viewCalBtn" role="tab" aria-selected="false">Calendar</button>
+          </div>
+
+          <span class="label">Theme</span>
+          <select id="themeSelect" aria-label="Theme">
+            <option value="system">System</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </div>
+      </div>
+
+      <form id="createForm">
+        <input id="text" type="text" placeholder="Add a task..." autocomplete="off" />
+        <input id="dueDate" type="date" />
+
+        <select id="priority" aria-label="Priority">
+          <option value="0">Low</option>
+          <option value="1" selected>Normal</option>
+          <option value="2">High</option>
+          <option value="3">Critical</option>
+        </select>
+
+        <button type="submit">Add</button>
+        <button type="button" class="secondary" id="clearDone">Clear done</button>
+      </form>
+
+      <div class="views">
+        <div id="listView" class="view active">
+          <ul id="list"></ul>
+        </div>
+
+        <div id="calView" class="view">
+          <div class="cal-wrap">
+            <div>
+              <div class="cal-head">
+                <div class="cal-title" id="calTitle"></div>
+                <div class="actions">
+                  <button type="button" class="tiny secondary" id="prevMonth">Prev</button>
+                  <button type="button" class="tiny secondary" id="todayBtn">Today</button>
+                  <button type="button" class="tiny secondary" id="nextMonth">Next</button>
+                </div>
+              </div>
+
+              <div class="cal-grid" id="calGrid"></div>
+
+              <div class="small" style="margin-top:8px;">
+                Calendar uses the task’s due date. Tasks without a due date appear in “Undated”.
+              </div>
+            </div>
+
+            <div class="panel">
+              <h2 id="dayTitle">Selected day</h2>
+              <div class="small" id="daySubtitle"></div>
+              <div class="hr"></div>
+
+              <div class="small" style="margin-bottom:6px;">Due on selected day</div>
+              <ul id="dayList"></ul>
+
+              <div class="hr"></div>
+
+              <div class="small" style="margin-bottom:6px;">Undated</div>
+              <ul id="undatedList"></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="error" id="error" hidden></div>
+    </div>
+
+    <!-- Toast host -->
+    <div id="toastHost" class="toast-host" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Modal (edit task only) -->
+    <div id="modalBackdrop" class="modal-backdrop hidden" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-head">
+          <div>
+            <div class="modal-title" id="modalTitle">Edit task</div>
+            <div class="modal-subtitle" id="modalSubtitle"></div>
+          </div>
+          <button type="button" class="icon-btn" id="modalClose" aria-label="Close">×</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="field">
+            <label for="modalText">Task</label>
+            <input id="modalText" type="text" />
+          </div>
+
+          <div class="field">
+            <label for="modalDue">Due date</label>
+            <input id="modalDue" type="date" />
+          </div>
+
+          <div class="field">
+            <label for="modalPriority">Priority</label>
+            <select id="modalPriority">
+              <option value="0">Low</option>
+              <option value="1">Normal</option>
+              <option value="2">High</option>
+              <option value="3">Critical</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="modalRecurUnit">Repeats</label>
+            <div class="inline-two">
+              <select id="modalRecurUnit">
+                <option value="none">None</option>
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+              </select>
+              <input id="modalRecurInterval" type="number" min="1" step="1" value="1" />
+            </div>
+            <div class="modal-hint">Every N units (e.g., Weekly + 2 = every 2 weeks).</div>
+          </div>
+
+          <div class="modal-error" id="modalError" hidden></div>
+        </div>
+
+        <div class="modal-foot">
+          <div class="spacer"></div>
+          <button type="button" class="secondary" id="cancelBtn">Cancel</button>
+          <button type="button" id="saveBtn">Save</button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
